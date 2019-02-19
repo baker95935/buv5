@@ -1,0 +1,83 @@
+{extend name="layout" /}
+{block name="style"}
+<link rel="stylesheet" href="//at.alicdn.com/t/font_785877_amz2ppzyq3.css">
+{/block}
+{block name="page"}
+<header class="bar bar-nav" style="background: #fff;">
+    <a class="icon icon-left pull-left color-danger" href="javascript:history.go(-1);"></a>
+    <a class="external button button-danger pull-right" href="{:url('index/user/register')}">
+        注册
+    </a>
+    <h1 class="title">登录</h1>
+</header>
+<div class="content">
+    <div class="list-block">
+        <ul>
+            <li>
+                <div class="item-content">
+                    <div class="item-media"><i class="iconfont icon-mobile"></i></div>
+                    <div class="item-inner">
+                        <div class="item-input">
+                            <input id="mobile" type="text" placeholder="请输入手机号">
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="item-content">
+                    <div class="item-media"><i class="iconfont icon-unlock"></i></div>
+                    <div class="item-inner">
+                        <div class="item-input">
+                            <input style="display: none" type="password" placeholder="请输入密码">
+                            <input id="password" type="password" placeholder="请输入密码">
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div class="content-block">
+        <a href="javascript:;" onclick="submit()" class="button button-big button-fill button-danger">立即登录</a>
+
+        <p style="text-align: center;"><a style="color: #333;" class="external" href="{:url('index/user/forget')}">忘记密码？</a></p>
+    </div>
+</div>
+{/block}
+{block name="script"}
+<script>
+    function submit() {
+        var mobile = $('#mobile').val(),
+            password = $('#password').val();
+        if (mobile === ''){
+            $.toast("请输入手机号");
+        } else if (password === ''){
+            $.toast("请输入密码");
+        } else {
+            $.showPreloader();
+            $.ajax({
+                url: "{:url('index/user/login')}",
+                data: {
+                    mobile:mobile,
+                    password:password
+                },
+                type: 'post',
+                success: function (res) {
+                    $.hidePreloader();
+                    if (res.code === 1){
+                        $.toast("登录成功，正在跳转...",3000);
+                        setTimeout(function () {
+                            location.href = '/'
+                        },3000)
+                    } else {
+                        $.toast(res.msg)
+                    }
+                },
+                error: function () {
+                    $.hidePreloader();
+                    $.toast('网络异常');
+                }
+            })
+        }
+    }
+</script>
+{/block}

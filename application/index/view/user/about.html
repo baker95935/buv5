@@ -1,0 +1,10 @@
+{extend name="layout" /}
+{block name="page"}
+<header class="bar bar-nav">
+    <a class="icon icon-left pull-left color-danger" href="javascript:history.go(-1);"></a>
+    <h1 class="title">关于我们</h1>
+</header>
+<div class="content-padded">
+    {$Think.config.about_us}
+</div>
+{/block}

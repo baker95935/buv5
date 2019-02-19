@@ -1,0 +1,179 @@
+{extend name="layout" /}
+{block name="page"}
+<header class="bar bar-nav">
+    <a class="icon icon-left pull-left color-danger" href="javascript:history.go(-1);"></a>
+    <h1 class="title">重置密码</h1>
+</header>
+<div class="content">
+    <div class="list-block">
+        <ul>
+            <li>
+                <div class="item-content">
+                    <div class="item-inner">
+                        <div class="item-title label">手机号</div>
+                        <div class="item-input">
+                            <input id="mobile" type="text" placeholder="请输入手机号">
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="item-content">
+                    <div class="row">
+                        <div class="col-60">
+                            <div class="item-inner">
+                                <div class="item-title label">验证码</div>
+                                <div class="item-input">
+                                    <input id="picVerify" type="text" placeholder="图片验证码">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-40" style="margin-left: 0">
+                            <div class="item-media">
+                                <img width="100%" id="verifyPic" onclick="this.src='{:captcha_src()}?d='+Math.random()" src="{:captcha_src()}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="item-content">
+                    <div class="row">
+                        <div class="col-60">
+                            <div class="item-inner">
+                                <div class="item-title label">验证码</div>
+                                <div class="item-input">
+                                    <input id="smsVerify" type="text" placeholder="短信验证码">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-30">
+                            <div class="item-media"><i class="icon icon-form-name"></i></div>
+                            <button id="getCode" onclick="sendSms()" class="button button-fill button-danger">发送验证码</button>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="item-content">
+                    <div class="item-inner">
+                        <div class="item-title label">密码</div>
+                        <div class="item-input">
+                            <input id="password" type="password" placeholder="请设置密码">
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div class="content-block">
+        <a onclick="submit()" class="button button-big button-fill button-danger">立即重置</a>
+    </div>
+</div>
+{/block}
+{block name="script"}
+<script>
+    var InterValObj; //timer变量，控制时间
+    var count = 60; //间隔函数，1秒执行
+    var curCount; //当前剩余秒数
+
+    function sendSms() {
+        var mobile = $('#mobile').val(),
+            picVerify = $('#picVerify').val();
+        if(mobile === ''){
+            $.toast("请输入手机号");
+        } else if (picVerify === ''){
+            $.toast("请输入图片验证码");
+        } else {
+            $("#getCode").attr("disabled", "true");
+            $.showPreloader();
+            $.ajax({
+                url: "{:url('index/sms/forget')}",
+                data: {mobile:mobile,picVerify:picVerify},
+                type: 'post',
+                success: function (res) {
+                    $.hidePreloader();
+                    if (res.code === 1){
+                        //设置button效果，开始计时
+                        curCount = count;
+                        $("#getCode").addClass("disabled");
+                        $("#getCode").html(curCount + "s重新获取");
+                        InterValObj = window.setInterval(SetRemainTimes, 1000); //启动计时器，1秒执行一
+                    } else {
+                        $.toast(res.msg);
+                        if(res.msg === '图片验证码错误，请重新输入'){
+                            $('#picVerify').val('');
+                            $('#verifyPic').attr('src','{:captcha_src()}?d='+Math.random())
+                        }
+                        $("#getCode").removeClass("disabled");
+                        $("#getCode").removeAttr("disabled");
+                    }
+                },
+                error: function () {
+                    $.hidePreloader();
+                    $.toast('网络异常');
+                }
+            })
+        }
+    }
+
+    //timer处理函数
+    function SetRemainTimes() {
+        if(curCount === 0) {
+            window.clearInterval(InterValObj); //停止计时器
+            $("#getCode").removeClass("disabled");
+            $("#getCode").removeAttr("disabled"); //启用按钮
+            $("#getCode").html("重新发送");
+            code = ""; //清除验证码。如果不清除，过时间后，输入收到的验证码依然有效
+        } else {
+            curCount--;
+            $("#getCode").html(curCount + "s重新获取");
+        }
+    }
+
+    function submit() {
+        var mobile = $('#mobile').val(),
+            smsVerify = $('#smsVerify').val(),
+            password = $('#password').val(),
+            name = $('#name').val(),
+            age = $('#age').val(),
+            ant = $('#ant').val();
+        if (mobile === ''){
+            $.toast("请输入手机号");
+        } else if (smsVerify === ''){
+            $.toast("请输入短信验证码");
+        } else if (password === ''){
+            $.toast("请设置密码");
+        } else {
+            $.showPreloader();
+            $.ajax({
+                url: "{:url('index/user/forget')}",
+                data: {
+                    mobile:mobile,
+                    smsVerify:smsVerify,
+                    password:password,
+                    name:name,
+                    age:age,
+                    ant:ant
+                },
+                type: 'post',
+                success: function (res) {
+                    $.hidePreloader();
+                    if (res.code === 1){
+                        $.toast("重置成功，去登录...",3000);
+                        setTimeout(function () {
+                            location.href = "{:url('index/user/login')}"
+                        },2000)
+                    } else {
+                        $.toast(res.msg)
+                    }
+                },
+                error: function () {
+                    $.hidePreloader();
+                    $.toast('网络异常');
+                }
+            })
+        }
+    }
+</script>
+{/block}

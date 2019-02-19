@@ -1,0 +1,121 @@
+{extend name="layout" /}
+{block name="style"}
+<link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm-extend.min.css">
+<style>
+    .swiper-container .swiper-slide img{height: 25vh;width: 100%}
+    .swiper-pagination-bullet-active {
+        background: #f6383a;
+    }
+    .loan_list {
+        padding: .2rem .25rem .15rem;
+    }
+    .loan_list a {
+        background-color: #fff;
+        float: left;
+        width: 46%;
+        margin: .3rem 0.3rem;
+        border-radius: .5rem;
+        padding: .25rem .25rem .1rem .25rem;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        position: relative;
+    }
+    .loan_list a .logo {
+        width: 2.4rem;
+        float: left;
+    }
+    .loan_list a .info {
+        display: inline-block;
+        margin-left: .3rem;
+    }
+    .loan_list a .info .name {
+        font-size: .8rem;
+        line-height: .3rem;
+        color: #222;
+        margin-bottom: .1rem;
+    }
+    .loan_list a .info .edu {
+        font-size: .6rem;
+        color: #999;
+        line-height: .22rem;
+    }
+    .loan_list a .point {
+        font-size: .6rem;
+        color: #999;
+        line-height: .47rem;
+        height: .47rem;
+    }
+</style>
+{/block}
+{block name="main"}
+<div class="content">
+    <!-- Slider -->
+    <div class="swiper-container">
+        <div class="swiper-wrapper">
+            {volist name="slider" id="item"}
+            <div class="swiper-slide">
+                <a class="external" href="{$item.url|default='javascript:void(0);'}"><img src="{:get_file_path($item['cover'])}" alt="{$item.title}"></a>
+            </div>
+            {/volist}
+        </div>
+        <div class="swiper-pagination" style="bottom: 1.5rem;"></div>
+    </div>
+
+    <div class="loan_list">
+        {volist name="customer" id="c"}
+                <a class="external" onclick="push({$c.id})">
+                    <img class="logo" src="{:get_file_path($c.logo)}" alt="logo">
+                    <span class="info">
+                        <p class="name">{$c.name}</p>
+                        <p class="edu">已下款：{$c.lower}</p>
+                    </span>
+                    <p class="point">{$c.point}</p>
+                </a>
+        {/volist}
+    </div>
+</div>
+{/block}
+{block name="script"}
+<script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm-extend.min.js' charset='utf-8'></script>
+<script>
+    $(function() {
+        $(".swiper-container").swiper({
+            pagination: '.swiper-pagination',
+            paginationClickable: true,
+            speed: 800,
+            loop: true,
+            observer:true,
+            observeParents:true,
+            autoplayDisableOnInteraction : false,
+            autoplay:3000
+        });
+    });
+    function push(cid) {
+        $.showPreloader();
+        $.ajax({
+            url: "{:url('index/index/click')}",
+            data: {cid: cid},
+            type: 'post',
+            success: function (res) {
+                $.hidePreloader();
+                if (res.code === 1){
+                    location.href = res.url
+                } else {
+                    if (res.msg === 'unlogin'){
+                        $.alert('您还没有登录，请登录', function () {
+                            location.href = "{:url('index/user/login')}"
+                        });
+                    } else {
+                        $.toast(res.msg)
+                    }
+                }
+            },
+            error: function () {
+                $.hidePreloader();
+                $.toast('网络异常');
+            }
+        })
+    }
+</script>
+{/block}

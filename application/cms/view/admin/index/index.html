@@ -1,0 +1,53 @@
+{extend name="$_admin_base_layout" /}
+
+{block name="content"}
+<div class="alert alert-info alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+    <h3 class="font-w300 push-15">开发者指引</h3>
+    <p>前台个人中心相关页面编辑，请在【系统】>【系统功能】>【系统设置】>【个人中心】中设置</p>
+    <!--<p>先 <a class="alert-link" href="{:url('cms/column/add')}">创建栏目</a>，</p>-->
+</div>
+<div class="row">
+    <div class="col-sm-6 col-md-3">
+        <a class="block block-link-hover3 text-center" href="{:url('user/index')}">
+            <div class="block-content block-content-full">
+                <div class="h1 font-w700 text-primary" data-toggle="countTo" data-to="{$users|default=0}"></div>
+            </div>
+            <div class="block-content block-content-full block-content-mini bg-gray-lighter text-muted font-w600">总用户数</div>
+        </a>
+    </div>
+    <div class="col-sm-6 col-md-3">
+        <a class="block block-link-hover3 text-center" href="{:url('agent/index')}">
+            <div class="block-content block-content-full">
+                <div class="h1 font-w700 text-success" data-toggle="countTo" data-to="{$agent|default=0}"></div>
+            </div>
+            <div class="block-content block-content-full block-content-mini bg-gray-lighter text-muted font-w600">渠道总数</div>
+        </a>
+    </div>
+    <div class="col-sm-6 col-md-3">
+        <a class="block block-link-hover3 text-center" href="{:url('customer/index')}">
+            <div class="block-content block-content-full">
+                <div class="h1 font-w700 text-info" data-toggle="countTo" data-to="{$customers|default=0}"></div>
+            </div>
+            <div class="block-content block-content-full block-content-mini bg-gray-lighter text-muted font-w600">总产品数</div>
+        </a>
+    </div>
+    <div class="col-sm-6 col-md-3">
+        <a class="block block-link-hover3 text-center" href="{:url('apply/index')}">
+            <div class="block-content block-content-full">
+                <div class="h1 font-w700 text-warning"><span data-toggle="countTo" data-to="{$apply|default=0}"></span></div>
+            </div>
+            <div class="block-content block-content-full block-content-mini bg-gray-lighter text-muted font-w600">申请总量</div>
+        </a>
+    </div>
+</div>
+{/block}
+
+{block name="script"}
+<script src="__ADMIN_JS__/core/jquery.countTo.min.js"></script>
+<script>
+    jQuery(function () {
+        App.initHelpers(['appear-countTo']);
+    });
+</script>
+{/block}
