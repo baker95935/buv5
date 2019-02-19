@@ -20,25 +20,7 @@
                     </div>
                 </div>
             </li>
-            <li>
-                <div class="item-content">
-                    <div class="row">
-                        <div class="col-60">
-                            <div class="item-inner">
-                                <div class="item-title label">验证码</div>
-                                <div class="item-input">
-                                    <input id="picVerify" type="text" placeholder="图片验证码">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-40" style="margin-left: 0">
-                            <div class="item-media">
-                                <img width="100%" id="verifyPic" onclick="this.src='{:captcha_src()}?d='+Math.random()" src="{:captcha_src()}">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </li>
+ 
             <li>
                 <div class="item-content">
                     <div class="row">
@@ -97,6 +79,33 @@
                     </div>
                 </div>
             </li>
+            
+            <li>
+                <div class="item-content">
+                    <div class="item-inner">
+                        <div class="item-title label">是否有信用卡</div>
+                        <div class="item-input">
+                            <select name="credit" id="credit">
+                            	<option value="0">请选择</option>
+	                            <option value="1">有信用卡</option>
+	                            <option value="2">无信用卡</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            
+            <li>
+                <div class="item-content">
+                    <div class="item-inner">
+                        <div class="item-title label">信用卡额度</div>
+                        <div class="item-input">
+                            <input id="creditlimit" type="number" placeholder="信用卡额度">
+                        </div>
+                    </div>
+                </div>
+            </li>
+            
         </ul>
     </div>
     <div class="content-block">
@@ -115,8 +124,6 @@
             picVerify = $('#picVerify').val();
         if(mobile === ''){
             $.toast("请输入手机号");
-        } else if (picVerify === ''){
-            $.toast("请输入图片验证码");
         } else {
             $("#getCode").attr("disabled", "true");
             $.showPreloader();
@@ -134,10 +141,6 @@
                         InterValObj = window.setInterval(SetRemainTimes, 1000); //启动计时器，1秒执行一
                     } else {
                         $.toast(res.msg);
-                        if(res.msg === '图片验证码错误，请重新输入'){
-                            $('#picVerify').val('');
-                            $('#verifyPic').attr('src','{:captcha_src()}?d='+Math.random())
-                        }
                         $("#getCode").removeClass("disabled");
                         $("#getCode").removeAttr("disabled");
                     }
@@ -171,6 +174,8 @@
             name = $('#name').val(),
             age = $('#age').val(),
             ant = $('#ant').val();
+            credit=$("#credit").val();
+            creditlimit=$('#creditlimit').val();
         if (mobile === ''){
             $.toast("请输入手机号");
         } else if (smsVerify === ''){
@@ -183,6 +188,8 @@
             $.toast("请输入年龄");
         } else if (ant === ''){
             $.toast("请输入芝麻分");
+        } else if (credit == 0){
+            $.toast("请选择是否有信用卡");
         } else {
             $.showPreloader();
             $.ajax({
@@ -193,7 +200,10 @@
                     password:password,
                     name:name,
                     age:age,
-                    ant:ant
+                    ant:ant,
+                    credit:credit,
+                    creditlimit:creditlimit
+                    
                 },
                 type: 'post',
                 success: function (res) {

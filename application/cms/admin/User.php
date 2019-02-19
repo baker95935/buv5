@@ -34,7 +34,7 @@ class User extends Admin
         $data_list = Db::name('user')
             ->alias('u')
             ->join('admin_user a','u.agent_id = a.id','LEFT')
-            ->field('u.id,u.mobile,u.avatar,u.name,u.age,u.ant,u.create_time,u.last_login_ip,a.nickname as agent_name')
+            ->field('u.id,u.mobile,u.avatar,u.name,u.age,u.ant,u.create_time,u.last_login_ip,a.nickname as agent_name,u.credit,u.creditlimit')
             ->where($map)->order($order)->paginate();
 
         // 按钮
@@ -54,6 +54,8 @@ class User extends Admin
                 ['name', '姓名'],
                 ['age', '年龄'],
                 ['ant', '芝麻分'],
+            	['credit', '信用卡'],
+            	['creditlimit', '信用卡额度'],
                 ['agent_name', '渠道'],
                 ['create_time', '注册时间', 'datetime'],
                 ['last_login_ip', '最后登录IP'],
@@ -65,6 +67,8 @@ class User extends Admin
             ->addValidate('User', 'name,url')
             ->setTableName('user')
             ->addTimeFilter('create_time')
+            ->addFilter('age,ant,credit,creditlimit') // 添加筛选
+            //->addFilterList('credit', ['有信用卡', '无信用卡'],  [1,0])
             ->addTopButton('custom', $btn_access) // 添加授权按钮
             ->fetch(); // 渲染模板
     }
