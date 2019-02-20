@@ -42,15 +42,15 @@ class Sms extends Controller
 	
     public function send(){
         $mobile = input('mobile');
-        $captcha = input('picVerify');
+        //$captcha = input('picVerify');
         $result = $this->validate(['mobile'=>$mobile],'User.mobile');
         if(true !== $result){
             // 验证失败 输出错误信息
             $this->error($result);
         }
-        if (!captcha_check($captcha, '', config('captcha'))){
-            $this->error('图片验证码错误，请重新输入');
-        }
+        //if (!captcha_check($captcha, '', config('captcha'))){
+            //$this->error('图片验证码错误，请重新输入');
+        //}
         $verify_code = rand(1000,9999);
         cache('verify_'.$mobile,$verify_code,60*5);
         $data = [
