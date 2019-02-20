@@ -86,9 +86,9 @@
                         <div class="item-title label">是否有信用卡</div>
                         <div class="item-input">
                             <select name="credit" id="credit">
-                            	<option value="0">请选择</option>
+                            	<option value="">请选择</option>
 	                            <option value="1">有信用卡</option>
-	                            <option value="2">无信用卡</option>
+	                            <option value="0">无信用卡</option>
                             </select>
                         </div>
                     </div>
@@ -188,7 +188,7 @@
             $.toast("请输入年龄");
         } else if (ant === ''){
             $.toast("请输入芝麻分");
-        } else if (credit == 0){
+        } else if (credit === ''){
             $.toast("请选择是否有信用卡");
         } else {
             $.showPreloader();
