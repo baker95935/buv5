@@ -198,8 +198,34 @@ class Apply extends Admin
     			->fetch(); // 渲染模板
     }
     
+    public function importfile()
+    {
+    	  	        // 调用插件（传入插件名，[导出文件名、表头信息、具体数据]）
+
+	    
+	    if ($this->request->isPost()) {
+ 
+    		if($_POST['files']) {
+    			 CustomerDataModel::where('id','>',0)->delete();
+    			
+		    	$info=Db::name('admin_attachment')->find($_POST['files']);     
+		    	 
+		    	$fields=array('name'=>'名称','count'=>'申请量');
+		        $result=plugin_action('Excel/Excel/import', [$info['path'],$table='customer_data',$fields,1,$where=array(),'name']);
+		        $this->success($result['message'], 'applyinfo');
+    		}
+	        exit;
+	    } else {
+		    return ZBuilder::make('form')
+		    ->addFormItem('file', 'files', '附件')
+		    ->isAjax(false)
+		    ->fetch();
+	    }
+    }
+    
     public function applyinfo()
     {
+  
     	$data_list = Db::name('customer_data')->field('cid,id,name,count')->order('id asc')->select();
     	$i=1;
        	foreach ($data_list as $k=>&$item){
@@ -210,7 +236,7 @@ class Apply extends Admin
         $btn_access = [
             'title' => '导入数据',
             'icon'  => 'fa fa-fw fa-download',
-            'href'  => url('into',$this->request->param())
+            'href'  => url('importfile',$this->request->param())
         ];
             	 // 按钮
         $btn_access_r = [
