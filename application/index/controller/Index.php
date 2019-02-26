@@ -48,6 +48,9 @@ class Index extends Home
         }
         $this->assign('slider', $this->getSlider());
         $this->assign('customer', $customer);
+        
+        $randNumber=rand(50,500)*100;
+        $this->assign('randNumber', $randNumber);
         return $this->fetch();
     }
 
