@@ -27,6 +27,8 @@ class User extends Home
     {
         $user_info = UserModel::get(UID);
         $this->assign('user',$user_info);
+        $randNumber=rand(50,500)*100;
+        $this->assign('randNumber', $randNumber);
         return $this->fetch();
     }
 
