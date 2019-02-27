@@ -1,0 +1,129 @@
+{extend name="layout" /}
+{block name="style"}
+<style>
+    .loan_list {
+        padding: .2rem .25rem .15rem;
+    }
+    .loan_list a {
+        background-color: #fff;
+        float: left;
+        width: 46%;
+        margin: .3rem 0.3rem;
+        border-radius: .5rem;
+        padding: .25rem .25rem .1rem .25rem;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        position: relative;
+    }
+    .loan_list a .logo {
+        width: 2.4rem;
+        float: left;
+    }
+    .loan_list a .info {
+        display: inline-block;
+        margin-left: .3rem;
+    }
+    .loan_list a .info .name {
+        font-size: .8rem;
+        line-height: .3rem;
+        color: #222;
+        margin-bottom: .1rem;
+    }
+    .loan_list a .info .edu {
+        font-size: .6rem;
+        color: #999;
+        line-height: .22rem;
+    }
+    .loan_list a .point {
+        font-size: .6rem;
+        color: #999;
+        line-height: .47rem;
+        height: .47rem;
+    }
+</style>
+{/block}
+{block name="page"}
+<div class="content">
+    <div class="buttons-tab">
+        <a href="#tab1" class="tab-link active button">新品上线</a>
+        <a href="#tab2" class="tab-link button">高通过率</a>
+    </div>
+    <div class="tabs">
+        <div id="tab1" class="tab active">
+            <div class="loan_list">
+                {volist name="new" id="n" mod="2"}
+                <a class="external" onclick="push({$n.id})">
+                    <img class="logo" src="{:get_file_path($n.logo)}" alt="logo">
+                    <span class="info">
+                                    <p class="name">{$n.name}</p>
+                                    <p class="edu">已下款：{$n.lower}</p>
+                                </span>
+                    <p class="point">{$n.point}</p>
+                </a>
+                {/volist}
+            </div>
+        </div>
+        <div id="tab2" class="tab">
+            <div class="loan_list">
+                {volist name="high" id="h" mod="2"}
+                <a class="external" onclick="push({$h.id})">
+                    <img class="logo" src="{:get_file_path($h.logo)}" alt="logo">
+                    <span class="info">
+                                    <p class="name">{$h.name}</p>
+                                    <p class="edu">已下款：{$h.lower}</p>
+                                </span>
+                    <p class="point">{$h.point}</p>
+                </a>
+                {/volist}
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 工具栏 -->
+<nav class="bar bar-tab">
+    <a class="tab-item external" href="/">
+        <span class="icon icon-home"></span>
+        <span class="tab-label">首页</span>
+    </a>
+    <a class="tab-item external active" href="{:url('index/index/supermarket')}">
+        <span class="icon icon-gift"></span>
+        <span class="tab-label">产品超市</span>
+    </a>
+    <a class="tab-item external" href="{:url('index/user/index')}">
+        <span class="icon icon-me"></span>
+        <span class="tab-label">个人中心</span>
+    </a>
+</nav>
+{/block}
+
+{block name="script"}
+<script>
+    function push(cid) {
+        $.showPreloader();
+        $.ajax({
+            url: "{:url('index/index/click')}",
+            data: {cid: cid},
+            type: 'post',
+            success: function (res) {
+                $.hidePreloader();
+                if (res.code === 1){
+                    location.href = res.url
+                } else {
+                    if (res.msg === 'unlogin'){
+                        $.alert('您还没有登录，请登录', function () {
+                            location.href = "{:url('index/user/login')}"
+                        });
+                    } else {
+                        $.toast(res.msg)
+                    }
+                }
+            },
+            error: function () {
+                $.hidePreloader();
+                $.toast('网络异常');
+            }
+        })
+    }
+</script>
+{/block}
