@@ -107,7 +107,7 @@
 <script>
 function call()
 {
-	alert('请选择  商品1  商品2  商品3 商品4');
+	alert('{$realinfo}');
 	window.location.href="/";
 }
 </script>
@@ -221,7 +221,7 @@ function call()
             endAngle: endAngle
           }
         }, animateCfg)).onUpdate(function(frame) {
-          $('#text').text({$randNumber});
+          $('#text').text({$user.firstlimit});
         });
       }
     }

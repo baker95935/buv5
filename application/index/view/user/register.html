@@ -211,7 +211,7 @@
                     if (res.code === 1){
                         $.toast("注册成功，正在登录...",3000);
                         setTimeout(function () {
-                            location.href = '/'
+                            location.href = "{:url('index/user/index')}";
                         },3000)
                     } else {
                         $.toast(res.msg)

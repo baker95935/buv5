@@ -50,7 +50,7 @@ class User extends Admin
             ->addColumns([ // 批量添加数据列
 //                ['id', 'ID'],
                 ['mobile', '手机号'],
-                ['avatar', '头像', 'picture'],
+               // ['avatar', '头像', 'picture'],
                 ['name', '姓名'],
                 ['age', '年龄'],
                 ['ant', '芝麻分'],

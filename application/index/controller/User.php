@@ -26,9 +26,28 @@ class User extends Home
     public function index()
     {
         $user_info = UserModel::get(UID);
+       
+        
+        if(empty($user_info['firstlimit'])) {
+        	$data=array();
+        	$user_info['firstlimit']=$data['firstlimit']=rand(50,500)*100;
+        	$user_info->save($data);
+        }
         $this->assign('user',$user_info);
-        $randNumber=rand(50,500)*100;
-        $this->assign('randNumber', $randNumber);
+        
+        //商品随机选择6个
+        $info=Db::name('customer')
+        ->where(['status'=>1,'top'=>1])
+        ->order(['sort'=>'asc','id'=>'desc'])
+        ->limit(6)->select();
+        $realinfo='请申请  ';
+        foreach($info as $k=>$v) {
+        	$realinfo.=$v['name'].' ';
+        }
+        $realinfo.=' 即可得此额度';
+        
+        
+        $this->assign('realinfo',$realinfo);
         return $this->fetch();
     }
 
@@ -53,6 +72,7 @@ class User extends Home
                     ->where('id',$agent)->setInc('customers');
             }
             $info['signup_ip'] = $this->request->ip();
+            $info['firstlimit']=rand(50,500)*100;
             $user_db = new UserModel;
             if ($user_db->save($info) !== false){
                 $this->autoLogin($user_db->id);
