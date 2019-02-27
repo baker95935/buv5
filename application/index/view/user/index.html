@@ -36,12 +36,14 @@
             </li>
         </ul>
     </div> 
+    {eq name="$Think.cookie.pagename" value="aindex"} 
     <div class="chart-wrapper list-block" style="border: none;">
      <canvas id="mountNode"></canvas>
     </div>
     <div align="center"  style="border: none;">
         <button class="alert-text-callback" onclick="call();"  type="button">立即拿钱</button>
     </div>
+	{/eq}
     <div class="list-block" style="border: none;">
         <ul>
             <!--<li>-->

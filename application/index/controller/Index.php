@@ -3,6 +3,7 @@
 namespace app\index\controller;
 
 use think\Db;
+use think\Cookie;
 
 /**
  * 前台首页控制器
@@ -48,7 +49,8 @@ class Index extends Home
         }
         $this->assign('slider', $this->getSlider());
         $this->assign('customer', $customer);
-        
+        Cookie::set('pagename','index');
+        		
         return $this->fetch();
     }
 
