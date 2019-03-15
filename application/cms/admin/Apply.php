@@ -75,7 +75,7 @@ class Apply extends Admin
         }
         
         $_map='';
-        if(null!=$map['au.nickname']) {
+        if(isset($map['au.nickname']) && null!=$map['au.nickname']) {
         	$_map="( `au`.`nickname` LIKE '".$map['au.nickname'][1]."' OR `c`.`name` LIKE '".$map['au.nickname'][1]."' OR `u`.`mobile` LIKE '".$map['au.nickname'][1]."' )";
         	unset($map['au.nickname']);
         }
